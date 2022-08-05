@@ -4,6 +4,8 @@
 //
 //  Created by Glenn Adams on 7/30/22.
 // A Swift project template for UIKit apps, no storyboards
+// layout views vertially
+// ideal for buttons
 
 import UIKit
 
@@ -20,6 +22,7 @@ class RootViewController: UIViewController {
         ui.addTarget(self, action: #selector(oneButtonTouchSelector), for: .touchUpInside)
         return ui
     }()
+    
     @objc fileprivate func oneButtonTouchSelector(sender:Any) {
         let file = "\(#file)".components(separatedBy: "/").last!; NSLog("\n\u{2705} \(#function) Line \(#line) of \(file)\n")
         
@@ -32,42 +35,34 @@ class RootViewController: UIViewController {
         let v1 = oneButton
         v1.setTitle("ONE", for: .normal)
         v1.backgroundColor = .red
+        
         let v2 = UIButton()
         v2.setTitle("TWO", for: .normal)
         v2.backgroundColor = .green
+        
         let v3 = UIButton()
         v3.setTitle("THREE", for: .normal)
         v3.backgroundColor = .yellow
         
         let viewArr = [v1,v2, v3]
-        
+        var viewDict=Dictionary<String,UIView>()
         var vFormat = "V:|"
         var hFormat = ""
 
-        var i=1
-        for eachView in viewArr {
+        for (i,eachView) in viewArr.enumerated() {
             view.addSubview(eachView)
             eachView.translatesAutoresizingMaskIntoConstraints=false
-            print(i)
             vFormat = vFormat + "-25-[v\(i)(75)]"
-            print(vFormat)
             hFormat =  "H:|-[v\(i)]-|"
             let h = NSLayoutConstraint.constraints(withVisualFormat: hFormat, metrics: nil, views: ["v\(i)":eachView])
             constraintsArr.append(contentsOf: h)
-            print(hFormat)
-            i+=1
+            viewDict["v\(i)"] = eachView
         }
-        
-        let viewDict = ["v1":v1, "v2":v2, "v3":v3]
         
         let v = NSLayoutConstraint.constraints(withVisualFormat: vFormat, metrics: nil, views: viewDict)
         constraintsArr.append(contentsOf: v)
         
-        NSLayoutConstraint.activate(constraintsArr.flatMap{$0})
-       // let c1 = NSLayoutConstraint.constraints(withVisualFormat: "H:|-[v1(100)]-|", metrics: nil, views: viewDict)
-       // let c2 = NSLayoutConstraint.constraints(withVisualFormat: "V:|[v1(50)]", metrics: nil, views: viewDict)
-        
-       // NSLayoutConstraint.activate([c1,c2].flatMap{$0})
+        NSLayoutConstraint.activate(constraintsArr.compactMap{$0})
     }
     
     
